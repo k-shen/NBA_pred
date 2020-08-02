@@ -1,4 +1,4 @@
-Traditional:
+Traditional: (remove GP, W, L, W%)
 MIN
 PTS
 FGM
@@ -22,7 +22,7 @@ PF
 PFD
 +/-
 
-Advanced:
+Advanced: (remove GP, W, L, W%, MIN)
 OFFRTG
 DEFRTG
 NETRTG
@@ -38,14 +38,14 @@ TS%
 PACE
 PIE
 
-Four:
+Four: (remove GP, W, L, W%, MIN, EFG%, TOV%, OREB%)
 FTA RATE
 OPP EFG%
 OPP FTA RATE
 OPP TOV%
 OPP OREB%
 
-Misc:
+Misc: (remove GP, W, L, W%, MIN)
 PTS OFF TO
 2ND PTS
 FBPS
@@ -72,7 +72,7 @@ Score:
 FGM %AST
 FGM %UAST
 
-Opp:
+Opp: (remove +/-)
 OPP FGM
 OPP FGA
 OPP FG%
@@ -93,4 +93,3 @@ OPP BLKA
 OPP PF
 OPP PFD
 OPP PTS
-OPP FB (from defense)
