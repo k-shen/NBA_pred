@@ -1,7 +1,6 @@
 import datetime
-from re import T
 YEAR = 2020
-NOTINCLUDE = {'team_name', 'attendance_per_g', '	attendance', 'arena_name'}
+NOTINCLUDE = {'team_name', 'attendance_per_g', 'attendance', 'arena_name'}
 TEAMS = set()
 
 week = datetime.date.today()
