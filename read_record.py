@@ -1,9 +1,10 @@
 import datetime
 import pandas as pd
 import re
+import os
 
-YEAR = 2021
-month = 'january'
+YEAR = 2020
+month = 'march'
 week = datetime.date.today()
 week = str(week)[-5:]
 TEAMS = {'Los Angeles Clippers', 'Charlotte Hornets', 'Chicago Bulls', 'San Antonio Spurs',
@@ -40,9 +41,10 @@ def readWebsite():
             outFile.close()
         inFile.close()
 
+    os.remove("{}_{}/record_html_{}.txt".format(YEAR-1, YEAR, month))
+
 
 def getRecords(lines):
-
     played = True
     idx = 0
     records = []

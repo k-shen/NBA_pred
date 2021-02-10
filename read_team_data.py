@@ -1,5 +1,6 @@
+import os
 import datetime
-YEAR = 2020
+YEAR = 2021
 NOTINCLUDE = {'team_name', 'attendance_per_g', 'attendance', 'arena_name'}
 TEAMS = set()
 
@@ -37,6 +38,8 @@ def readWebsite():
         miscellaneous = formTableM(miscellaneous_portion)
         combineTable(traditional, opponent, miscellaneous)
         inFile.close()
+
+    os.remove("{}_{}/data_html_{}.txt".format(YEAR-1, YEAR, week))
 
 
 def formTable(html_str):
