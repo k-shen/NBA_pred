@@ -3,8 +3,8 @@ import pandas as pd
 import re
 import os
 
-YEAR = 2020
-month = 'march'
+YEAR = 2021
+month = 'february'
 week = datetime.date.today()
 week = str(week)[-5:]
 TEAMS = {'Los Angeles Clippers', 'Charlotte Hornets', 'Chicago Bulls', 'San Antonio Spurs',

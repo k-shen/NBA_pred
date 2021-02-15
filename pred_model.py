@@ -9,8 +9,11 @@ import numpy as np
 import os
 import re
 from os import path
+import glob
+import read_team_data
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
-directories = ['2019_2020/', '2020_2021/']
+seasons = ['2019_2020/', '2020_2021/']
 TEAMS = {'Los Angeles Clippers', 'Charlotte Hornets', 'Chicago Bulls', 'San Antonio Spurs',
          'New Orleans Pelicans', 'Golden State Warriors', 'Oklahoma City Thunder', 'Memphis Grizzlies',
          'New York Knicks', 'Houston Rockets', 'Indiana Pacers', 'Toronto Raptors', 'Minnesota Timberwolves',
@@ -21,15 +24,17 @@ TEAMS = {'Los Angeles Clippers', 'Charlotte Hornets', 'Chicago Bulls', 'San Anto
 
 
 def buildData():
+    print("Retrieving most recent data...")
+    new_data_file = read_team_data.main()
     away_data = []
     home_data = []
     away_scores = []
     home_scores = []
 
-    for directory in directories:
+    for directory in seasons:
         for allFiles in os.listdir(directory):
-            RecordFile = re.findall('record_\D{,12}\.csv', allFiles)
-            teamData = pd.read_csv("{}data_02-09.csv".format(directory))
+            RecordFile = re.findall('record_.{,12}\.csv', allFiles)
+            teamData = pd.read_csv(new_data_file)
             if (RecordFile):
                 with open('{}{}'.format(directory, RecordFile[0]), 'r') as recFile:
                     games = recFile.readlines()
@@ -91,16 +96,16 @@ def buildData():
     np.savetxt("away_scores.csv", away_scores, delimiter=',')
 
 
-def createModel():
+def createModel(train_percentage):
     home_data = np.genfromtxt('home_data.csv', delimiter=',', dtype=float)
     away_data = np.genfromtxt('away_data.csv', delimiter=',', dtype=float)
     home_scores = np.genfromtxt('home_scores.csv', delimiter=',', dtype=float)
     away_scores = np.genfromtxt('away_scores.csv', delimiter=',', dtype=float)
 
     X_train1, X_test_home, y_train1, y_test_home = train_test_split(
-        home_data, home_scores, test_size=0.3, shuffle=True)
+        home_data, home_scores, test_size=(1-train_percentage), shuffle=True)
     X_train2, X_test_away, y_train2, y_test_away = train_test_split(
-        away_data, away_scores, test_size=0.3, shuffle=True)
+        away_data, away_scores, test_size=(1-train_percentage), shuffle=True)
 
     train_matrix = np.concatenate((X_train1, X_train2), axis=0)
     train_target = np.concatenate((y_train1, y_train2), axis=None)
@@ -149,37 +154,20 @@ def createModel():
             pred_win_loss.append(0)
 
     acc2 = accuracy_score(win_loss, pred_win_loss)
-    print("Created Model")
-    print("Train Test Split = 70:30")
-    print("Ridge Regression accuracy on testing sets: {}".format(acc1))
-    print("NN accuracy on testing sets: {}".format(acc2))
-
-    return regression, model
+    return regression, model, acc1, acc2
 
 
-def predicting(AwayTeam, HomeTeam):
-    if AwayTeam not in TEAMS:
-        print(
-            "{} is not in the data base... Full names only and check spelling".format(AwayTeam))
-        return
-
-    if HomeTeam not in TEAMS:
-        print(
-            "{} is not in the data base... Full names only and check spelling".format(HomeTeam))
-        return
-
+def predicting(AwayTeam, HomeTeam, new_data_file):
     if not (path.exists("home_data.csv") and path.exists("away_data.csv")
             and path.exists("home_scores.csv") and path.exists("away_scores.csv")):
         buildData()
-
-    print("Found data set")
 
     reg_h = []
     reg_a = []
     nn_h = []
     nn_a = []
 
-    teamData = pd.read_csv("{}data_02-10.csv".format(directories[1]))
+    teamData = pd.read_csv(new_data_file)
     HomeTeam_data = teamData.loc[teamData['team_name']
                                  == HomeTeam.strip()].values[0]
     AwayTeam_data = teamData.loc[teamData['team_name']
@@ -208,8 +196,12 @@ def predicting(AwayTeam, HomeTeam):
     stat_home = np.array(stat_home).reshape((1, len(stat_home)))
     stat_away = np.array(stat_away).reshape((1, len(stat_away)))
 
+    train_percentage = 0.7
+    acc1 = []
+    acc2 = []
+    print("Running Models", end='')
     for i in range(3):
-        regression, model = createModel()
+        regression, model, acc1_, acc2_ = createModel(train_percentage)
 
         home_score_r = regression.predict(stat_home)
         away_score_r = regression.predict(stat_away)
@@ -219,56 +211,67 @@ def predicting(AwayTeam, HomeTeam):
         reg_a.append(away_score_r[0])
         nn_h.append(home_score_n[0][0])
         nn_a.append(away_score_n[0][0])
+        acc1.append(acc1_)
+        acc2.append(acc2_)
+        print('.', end='')
+
+    print('\n')
+    avg_acc1 = average(acc1)
+    avg_acc2 = average(acc2)
+    print("With Train Test Split = {:d}:{:d}".format(
+        int(100*train_percentage), int(100*(1-train_percentage))))
+    print(
+        "Average Ridge Regression accuracy on testing sets: {:.2f}%".format(avg_acc1*100))
+    print("Average NN accuracy on testing sets: {:.2f}%".format(avg_acc2*100))
 
     home_score = average(reg_h)
     away_score = average(reg_a)
     if home_score > away_score:
-        print("With the {} being the home team, regression predicts that they beat the {} by {} pts".format(
-            HomeTeam, AwayTeam, home_score-away_score))
+        print("With the {} being the home team, regression predicts that they beat the {} by {:.3f} pts".format(
+            HomeTeam, AwayTeam, round(home_score-away_score, 3)))
     else:
-        print("With the {} being the home team, regression predicts that they lose to the {} by {} pts".format(
-            HomeTeam, AwayTeam, -home_score+away_score))
+        print("With the {} being the home team, regression predicts that they lose to the {} by {:.3f} pts".format(
+            HomeTeam, AwayTeam, round(away_score-home_score, 3)))
 
     home_score = average(nn_h)
     away_score = average(nn_a)
     if home_score > away_score:
-        print("With the {} being the home team, NN predicts that they beat the {} by {} pts".format(
-            HomeTeam, AwayTeam, home_score-away_score))
+        print("With the {} being the home team, NN predicts that they beat the {} by {:.3f} pts".format(
+            HomeTeam, AwayTeam, round(home_score-away_score, 3)))
     else:
-        print("With the {} being the home team, NN predicts that they lose to the {} by {} pts".format(
-            HomeTeam, AwayTeam, -home_score+away_score))
+        print("With the {} being the home team, NN predicts that they lose to the {} by {:.3f} pts".format(
+            HomeTeam, AwayTeam, round(away_score-home_score, 3)))
 
     if HomeTeam_win > HomeTeam_proj_win:
         print("The {} is exceeding expectations by {} wins".format(
             HomeTeam, HomeTeam_win - HomeTeam_proj_win))
     elif HomeTeam_proj_win > HomeTeam_win:
-        print("The {} is exceeding expectations by {} wins".format(
+        print("The {} is short of the expectations by {} wins".format(
             HomeTeam, -HomeTeam_win + HomeTeam_proj_win))
 
     if AwayTeam_win > AwayTeam_proj_win:
         print("The {} is exceeding expectations by {} wins".format(
             AwayTeam, AwayTeam_win - AwayTeam_proj_win))
     elif AwayTeam_proj_win > AwayTeam_win:
-        print("The {} is exceeding expectations by {} wins".format(
+        print("The {} is short of the expectations by {} wins".format(
             AwayTeam, -AwayTeam_win + AwayTeam_proj_win))
 
 
 if __name__ == '__main__':
-    predicting('Toronto Raptors', 'Washington Wizards')
+    print("Retrieving most recent data...")
+    new_data_file = read_team_data.main()
+
+    AwayTeam = ''
+    while AwayTeam not in TEAMS:
+        AwayTeam = input(
+            'Enter Away Team (Full Name, Check Spelling & Capitalization): ')
+
+    HomeTeam = ''
+    while HomeTeam not in TEAMS:
+        HomeTeam = input(
+            'Enter Home Team (Full Name, Check Spelling & Capitalization): ')
+
+    predicting(AwayTeam, HomeTeam, new_data_file)
+    print("Thank you for using the model, hope it helps!")
     print()
-    predicting('Atlanta Hawks', 'Dallas Mavericks')
-    print()
-    predicting('Charlotte Hornets', 'Memphis Grizzlies')
-    print()
-    predicting('Indiana Pacers', 'Brooklyn Nets')
-    print()
-    predicting('New Orleans Pelicans', 'Chicago Bulls')
-    print()
-    predicting('Cleveland Cavaliers', 'Denver Nuggets')
-    print()
-    predicting('Los Angeles Clippers', 'Minnesota Timberwolves')
-    print()
-    predicting('Milwaukee Bucks', 'Phoenix Suns')
-    print()
-    predicting('Oklahoma City Thunder', 'Los Angeles Lakers')
-    print()
+    os.remove(new_data_file)

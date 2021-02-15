@@ -4,8 +4,8 @@ YEAR = 2021
 NOTINCLUDE = {'team_name', 'attendance_per_g', 'attendance', 'arena_name'}
 TEAMS = set()
 
-week = datetime.date.today()
-week = str(week)[-5:]
+date = datetime.date.today()
+week = str(date)[-5:]
 
 
 def readWebsite():
@@ -15,7 +15,7 @@ def readWebsite():
     url = "https://www.basketball-reference.com/leagues/NBA_{}.html?lid=header_seasons#all_team-stats-per_game".format(
         YEAR)
     html = urlopen(url)
-    soup = BeautifulSoup(html)
+    soup = BeautifulSoup(html, features="lxml")
 
     with open("{}_{}/data_html_{}.txt".format(YEAR-1, YEAR, week), "w") as dataFile:
         dataFile.write(soup.prettify())
@@ -142,5 +142,11 @@ def findInHTML(symbol, lines):
     return 0
 
 
-if __name__ == '__main__':
+def main():
     readWebsite()
+    return "{}_{}/data_{}.csv".format(YEAR-1, YEAR, week)
+
+
+if __name__ == '__main__':
+    main()
+    print('Generating data at {}_{}/data_{}.csv'.format(YEAR-1, YEAR, week))
