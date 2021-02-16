@@ -224,23 +224,31 @@ def predicting(AwayTeam, HomeTeam, new_data_file):
         "Average Ridge Regression accuracy on testing sets: {:.2f}%".format(avg_acc1*100))
     print("Average NN accuracy on testing sets: {:.2f}%".format(avg_acc2*100))
 
-    home_score = average(reg_h)
-    away_score = average(reg_a)
-    if home_score > away_score:
-        print("With the {} being the home team, regression predicts that they beat the {} by {:.3f} pts".format(
-            HomeTeam, AwayTeam, round(home_score-away_score, 3)))
+    home_score_r = average(reg_h)
+    away_score_r = average(reg_a)
+    if home_score_r > away_score_r:
+        print("With the {} being the home team, regression predicts that they beat the {} by {:.2f} pts".format(
+            HomeTeam, AwayTeam, round(home_score_r-away_score_r, 2)))
     else:
-        print("With the {} being the home team, regression predicts that they lose to the {} by {:.3f} pts".format(
-            HomeTeam, AwayTeam, round(away_score-home_score, 3)))
+        print("With the {} being the home team, regression predicts that they lose to the {} by {:.2f} pts".format(
+            HomeTeam, AwayTeam, round(away_score_r-home_score_r, 2)))
 
-    home_score = average(nn_h)
-    away_score = average(nn_a)
-    if home_score > away_score:
-        print("With the {} being the home team, NN predicts that they beat the {} by {:.3f} pts".format(
-            HomeTeam, AwayTeam, round(home_score-away_score, 3)))
+    home_score_n = average(nn_h)
+    away_score_n = average(nn_a)
+    if home_score_n > away_score_n:
+        print("With the {} being the home team, NN predicts that they beat the {} by {:.2f} pts".format(
+            HomeTeam, AwayTeam, round(home_score_n-away_score_n, 2)))
     else:
-        print("With the {} being the home team, NN predicts that they lose to the {} by {:.3f} pts".format(
-            HomeTeam, AwayTeam, round(away_score-home_score, 3)))
+        print("With the {} being the home team, NN predicts that they lose to the {} by {:.2f} pts".format(
+            HomeTeam, AwayTeam, round(away_score_n-home_score_n, 2)))
+
+    if home_score_r > away_score_r and home_score_n > away_score_n:
+        print("The average win margin for {} is {:.2f} pts".format(HomeTeam,
+                                                                   avg(home_score_r-away_score_r, home_score_n-away_score_n)))
+
+    if home_score_r < away_score_r and home_score_n < away_score_n:
+        print("The average win margin for {} is {:.2f} pts".format(AwayTeam,
+                                                                   avg(away_score_r-home_score_r, away_score_n-home_score_n)))
 
     if HomeTeam_win > HomeTeam_proj_win:
         print("The {} is exceeding expectations by {} wins".format(
@@ -257,6 +265,10 @@ def predicting(AwayTeam, HomeTeam, new_data_file):
             AwayTeam, -AwayTeam_win + AwayTeam_proj_win))
 
 
+def avg(num1, num2):
+    return (num1 + num2)/2
+
+
 if __name__ == '__main__':
     print("Retrieving most recent data...")
     new_data_file = read_team_data.main()
@@ -265,11 +277,13 @@ if __name__ == '__main__':
     while AwayTeam not in TEAMS:
         AwayTeam = input(
             'Enter Away Team (Full Name, Check Spelling & Capitalization): ')
+        AwayTeam = AwayTeam.strip()
 
     HomeTeam = ''
     while HomeTeam not in TEAMS:
         HomeTeam = input(
             'Enter Home Team (Full Name, Check Spelling & Capitalization): ')
+        HomeTeam = HomeTeam.strip()
 
     predicting(AwayTeam, HomeTeam, new_data_file)
     print("Thank you for using the model, hope it helps!")
