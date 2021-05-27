@@ -15,7 +15,7 @@ def readWebsite():
     url = "https://www.basketball-reference.com/leagues/NBA_{}.html?lid=header_seasons#all_team-stats-per_game".format(
         YEAR)
     html = urlopen(url)
-    soup = BeautifulSoup(html, features="lxml")
+    soup = BeautifulSoup(html)#, features="lxml")
 
     with open("{}_{}/data_html_{}.txt".format(YEAR-1, YEAR, week), "w") as dataFile:
         dataFile.write(soup.prettify())

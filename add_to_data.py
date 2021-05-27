@@ -31,7 +31,7 @@ def readWebsite(prev_date):
     url = "https://www.basketball-reference.com/leagues/NBA_{}_games-{}.html".format(
         YEAR, month)
     html = urlopen(url)
-    soup = BeautifulSoup(html, features="lxml")
+    soup = BeautifulSoup(html)#, features="lxml")
 
     with open("{}_{}/record_html_{}.txt".format(YEAR-1, YEAR, month), "w") as dataFile:
         dataFile.write(soup.prettify())
