@@ -1,7 +1,0 @@
-Creates growable nba dataset based off nba.com team data
-Requires Python3.6+ with additional packages as instructed
-To run prediction, run following terminal command:
-    $ bash build.sh
-
-Sample Output:
-![plot](./sample_output.png)
