@@ -42,12 +42,19 @@ ALL_TEAM_NAMES = {'Los Angeles Clippers', 'Charlotte Hornets', 'Chicago Bulls', 
 
 SHORT_CUTS= {'Clippers', 'Clips', 'Hornets', 'Bulls', 'Spurs', 'Pelicans', 'Pels', 'Warriors', 'Thunder', 'OKC', 'Grizzlies', 'Knicks', 'Rockets', 
          'Pacers', 'Raptors', 'Timberwolves', 'T Wolves', 'Mavericks', 'Mavs', 'Blazers', 'Nuggets', 'Nugs', 'Magic', 'Celtics', 'Suns', 'Kings', 
-         'Bucks', 'Wizards', 'Lakers', 'Heat' 'Jazz', 'Nets', 'Pistons', 'Cavaliers', 'Cavs', 'Hawks', '76ers', '6ers'}
+         'Bucks', 'Wizards', 'Lakers', 'Heat', 'Jazz', 'Nets', 'Pistons', 'Cavaliers', 'Cavs', 'Hawks', '76ers', '6ers'}
 
 SHORT_CUTS_DICT = {'Clippers': 'Los Angeles Clippers', 'Clips': 'Los Angeles Clippers', 'Hornets': 'Charlotte Hornets', 'Bulls': 'Chicago Bulls', 'Spurs': 'San Antonio Spurs',
          'Pelicans': 'New Orleans Pelicans', 'Pels': 'New Orleans Pelicans', 'Warriors': 'Golden State Warriors', 'Thunder': 'Oklahoma City Thunder', 'OKC': 'Oklahoma City Thunder', 
          'Grizzlies': 'Memphis Grizzlies', 'Knicks': 'New York Knicks', 'Rockets': 'Houston Rockets', 'Pacers': 'Indiana Pacers', 'Raptors': 'Toronto Raptors', 
-         'Timberwolves': 'Minnesota Timberwolves', 'T Wolves': 'Minnesota Timberwolves', 'Mavericks': 'Dallas Mavericks', 'Mavs': 'Dallas Mavericks', 'Blazers': 'Portland Trail Blazers', 
+         'Timberwolves': 'Minnesota Timberwolves', 'T Wolves': 'Minnesota Timberwolves', 'T wolves': 'Minnesota Timberwolves', 'Mavericks': 'Dallas Mavericks', 'Mavs': 'Dallas Mavericks', 'Blazers': 'Portland Trail Blazers', 
          'Nuggets': 'Denver Nuggets', 'Nugs': 'Denver Nuggets', 'Magic': 'Orlando Magic', 'Celtics': 'Boston Celtics', 'Suns': 'Phoenix Suns', 'Kings': 'Sacramento Kings', 
          'Bucks': 'Milwaukee Bucks', 'Wizards': 'Washington Wizards', 'Lakers': 'Los Angeles Lakers', 'Heat': 'Miami Heat', 'Jazz': 'Utah Jazz', 'Nets': 'Brooklyn Nets', 
-         'Pistons': 'Detroit Pistons', 'Cavaliers': 'Cleveland Cavaliers', 'Cavs': 'Cleveland Cavaliers', 'Hawks': 'Atlanta Hawks', '76ers': 'Philadelphia 76ers', '6ers': 'Philadelphia 76ers'}
+         'Pistons': 'Detroit Pistons', 'Cavaliers': 'Cleveland Cavaliers', 'Cavs': 'Cleveland Cavaliers', 'Hawks': 'Atlanta Hawks', '76ers': 'Philadelphia 76ers', '6ers': 'Philadelphia 76ers', 
+         'Los Angeles Clippers':'Los Angeles Clippers', 'Charlotte Hornets':'Charlotte Hornets', 'Chicago Bulls':'Chicago Bulls', 'San Antonio Spurs':'San Antonio Spurs',
+         'New Orleans Pelicans':'New Orleans Pelicans', 'Golden State Warriors':'Golden State Warriors', 'Oklahoma City Thunder':'Oklahoma City Thunder', 'Memphis Grizzlies':'Memphis Grizzlies',
+         'New York Knicks':'New York Knicks', 'Houston Rockets':'Houston Rockets', 'Indiana Pacers':'Indiana Pacers', 'Toronto Raptors':'Toronto Raptors', 'Minnesota Timberwolves':'Minnesota Timberwolves',
+         'Dallas Mavericks':'Dallas Mavericks', 'Portland Trail Blazers':'Portland Trail Blazers', 'Denver Nuggets':'Denver Nuggets', 'Orlando Magic':'Orlando Magic', 'Boston Celtics':'Boston Celtics',
+         'Phoenix Suns':'Phoenix Suns', 'Sacramento Kings':'Sacramento Kings', 'Milwaukee Bucks':'Milwaukee Bucks', 'Washington Wizards':'Washington Wizards', 'Los Angeles Lakers':'Los Angeles Lakers',
+         'Miami Heat':'Miami Heat', 'Utah Jazz':'Utah Jazz', 'Brooklyn Nets':'Brooklyn Nets', 'Detroit Pistons':'Detroit Pistons', 'Cleveland Cavaliers':'Cleveland Cavaliers', 'Atlanta Hawks':'Atlanta Hawks',
+         'Philadelphia 76ers':'Philadelphia 76ers'}
