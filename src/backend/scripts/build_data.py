@@ -152,6 +152,9 @@ def addDataToCSV(data, date):
             to_write = [name]
             to_write = to_write + data[team]
             writer.writerow(to_write)
+
+    with open(LASTRECORD, 'w') as infile:
+            infile.write(date)
             
 # writes full season data to file
 def writeDataOfSeason(season):
@@ -169,7 +172,7 @@ def writeDataOfSeason(season):
 
 def appendData(season, from_date, to_date):
     delta = datetime.timedelta(days=1)
-    while from_date <= to_date:
+    while from_date < to_date:
         date = from_date.strftime("%m/%d/%Y")
         from_date += delta
         data = buildDataOfDate(season, date)
