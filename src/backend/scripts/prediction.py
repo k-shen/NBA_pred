@@ -42,7 +42,7 @@ def predictUsingLastNGameData(N, away_team, home_team, data):
     if data == None:
         addNewData()
         print("Retriving new data, ignore browser pop-ups")
-        data = getTeamsLastNGameData(SEASONS_LIST[-2], N)
+        data = getTeamsLastNGameData(SEASONS_LIST[-1], N)
     
     regression, model = buildModel(0.7, [])
     print("Estimating the team's performance based on the previous 3 games...")
@@ -67,6 +67,11 @@ def predictionHelper(home_team, away_team, model, data):
     return result
 
 def predicting(data):
+    if data == None:
+        addNewData()
+    print("Retriving new data, ignore browser pop-ups")
+    data = getTeamsLastNGameData(SEASONS_LIST[-1], 3)
+    
     away_team = ''
     second = False
     while away_team not in ALL_TEAM_NAMES and away_team not in SHORT_CUTS:
@@ -74,9 +79,9 @@ def predicting(data):
             print('Wrong team name, please check your spelling!')
         away_team = input('Enter Away Team: ')
         away_team = away_team.capitalize()
-        away_team = SHORT_CUTS_DICT[away_team]
         second = True
-
+    away_team = SHORT_CUTS_DICT[away_team]
+    
     home_team = ''
     second = False
     while home_team not in ALL_TEAM_NAMES and home_team not in SHORT_CUTS:
@@ -84,9 +89,8 @@ def predicting(data):
             print('Wrong team name, please check your spelling!')
         home_team = input('Enter Home Team: ')
         home_team = home_team.capitalize()
-        home_team = SHORT_CUTS_DICT[home_team]
         second = True
-
+    home_team = SHORT_CUTS_DICT[home_team]
     
     data = predictUsingLastNGameData(3, away_team, home_team, data)
     again = input(
@@ -106,9 +110,10 @@ def predicting(data):
                 print('Wrong team name, please check your spelling!')
             away_team = input('Enter Away Team: ')
             away_team = away_team.capitalize()
-            away_team = SHORT_CUTS_DICT[away_team]
+            
             second = True
-
+        away_team = SHORT_CUTS_DICT[away_team]
+        
         home_team = ''
         second = False
         while home_team not in ALL_TEAM_NAMES and home_team not in SHORT_CUTS:
@@ -116,8 +121,8 @@ def predicting(data):
                 print('Wrong team name, please check your spelling!')
             home_team = input('Enter Home Team: ')
             home_team = home_team.capitalize()
-            home_team = SHORT_CUTS_DICT[home_team]
             second = True
+        home_team = SHORT_CUTS_DICT[home_team]
         
         data = predictUsingLastNGameData(3, away_team, home_team, data)
         again = input(

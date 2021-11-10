@@ -40,14 +40,14 @@ ALL_TEAM_NAMES = {'Los Angeles Clippers', 'Charlotte Hornets', 'Chicago Bulls', 
          'Miami Heat', 'Utah Jazz', 'Brooklyn Nets', 'Detroit Pistons', 'Cleveland Cavaliers', 'Atlanta Hawks',
          'Philadelphia 76ers'}
 
-SHORT_CUTS= {'Clippers', 'Clips', 'Hornets', 'Bulls', 'Spurs', 'Pelicans', 'Pels', 'Warriors', 'Thunder', 'OKC', 'Grizzlies', 'Knicks', 'Rockets', 
-         'Pacers', 'Raptors', 'Timberwolves', 'T Wolves', 'Mavericks', 'Mavs', 'Blazers', 'Nuggets', 'Nugs', 'Magic', 'Celtics', 'Suns', 'Kings', 
+SHORT_CUTS= {'Clippers', 'Clips', 'Hornets', 'Bulls', 'Spurs', 'Pelicans', 'Pels', 'Warriors', 'Thunder', 'OKC', 'Okc', 'Grizzlies', 'Knicks', 'Rockets', 
+         'Pacers', 'Raptors', 'Timberwolves', 'T Wolves', 'Twolves', 'T wolves', 'Mavericks', 'Mavs', 'Blazers', 'Nuggets', 'Nugs', 'Magic', 'Celtics', 'Suns', 'Kings', 
          'Bucks', 'Wizards', 'Lakers', 'Heat', 'Jazz', 'Nets', 'Pistons', 'Cavaliers', 'Cavs', 'Hawks', '76ers', '6ers'}
 
 SHORT_CUTS_DICT = {'Clippers': 'Los Angeles Clippers', 'Clips': 'Los Angeles Clippers', 'Hornets': 'Charlotte Hornets', 'Bulls': 'Chicago Bulls', 'Spurs': 'San Antonio Spurs',
-         'Pelicans': 'New Orleans Pelicans', 'Pels': 'New Orleans Pelicans', 'Warriors': 'Golden State Warriors', 'Thunder': 'Oklahoma City Thunder', 'OKC': 'Oklahoma City Thunder', 
+         'Pelicans': 'New Orleans Pelicans', 'Pels': 'New Orleans Pelicans', 'Warriors': 'Golden State Warriors', 'Thunder': 'Oklahoma City Thunder', 'OKC': 'Oklahoma City Thunder', 'Okc': 'Oklahoma City Thunder',
          'Grizzlies': 'Memphis Grizzlies', 'Knicks': 'New York Knicks', 'Rockets': 'Houston Rockets', 'Pacers': 'Indiana Pacers', 'Raptors': 'Toronto Raptors', 
-         'Timberwolves': 'Minnesota Timberwolves', 'T Wolves': 'Minnesota Timberwolves', 'T wolves': 'Minnesota Timberwolves', 'Mavericks': 'Dallas Mavericks', 'Mavs': 'Dallas Mavericks', 'Blazers': 'Portland Trail Blazers', 
+         'Timberwolves': 'Minnesota Timberwolves', 'T Wolves': 'Minnesota Timberwolves', 'Twolves': 'Minnesota Timberwolves', 'T wolves': 'Minnesota Timberwolves', 'Mavericks': 'Dallas Mavericks', 'Mavs': 'Dallas Mavericks', 'Blazers': 'Portland Trail Blazers', 
          'Nuggets': 'Denver Nuggets', 'Nugs': 'Denver Nuggets', 'Magic': 'Orlando Magic', 'Celtics': 'Boston Celtics', 'Suns': 'Phoenix Suns', 'Kings': 'Sacramento Kings', 
          'Bucks': 'Milwaukee Bucks', 'Wizards': 'Washington Wizards', 'Lakers': 'Los Angeles Lakers', 'Heat': 'Miami Heat', 'Jazz': 'Utah Jazz', 'Nets': 'Brooklyn Nets', 
          'Pistons': 'Detroit Pistons', 'Cavaliers': 'Cleveland Cavaliers', 'Cavs': 'Cleveland Cavaliers', 'Hawks': 'Atlanta Hawks', '76ers': 'Philadelphia 76ers', '6ers': 'Philadelphia 76ers', 
