@@ -1,0 +1,8 @@
+chromedriver
+selenium
+pandas
+tensorflow
+bs4
+webdriver_manager
+sklearn
+scipy
