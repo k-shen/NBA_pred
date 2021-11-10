@@ -1,0 +1,9 @@
+.DS_Store
+src/.DS_Store
+src/backend/.DS_Store
+src/backend/chromedriver_mac64_m1.zip
+src/backend/driver/.DS_Store
+src/backend/scripts/__pycache__/
+src/backend/driver/chromedriver
+src/backend/scripts/Keras_eval.txt
+src/backend/scripts/Ridge.txt
