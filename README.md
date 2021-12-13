@@ -6,7 +6,7 @@ Use both home and away team stats and respective scores in the past to train the
 Currently implementing user friendly web page adaptation as well as customable prediction data selection feature.<br/>Need to manually update season information in src/backend/scripts/constants.py. <br/>
 <br/>
 ## Execution
-Requires Python3.6+ with additional standard packages.
+Requires Python3.6+ with additional standard packages. Check for the correct chromedriver
 To run prediction, run following terminal command:
 ```bash
 bash build.sh
