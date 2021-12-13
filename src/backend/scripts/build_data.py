@@ -1,24 +1,33 @@
 from datetime import datetime
 from bs4 import BeautifulSoup
 from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
 import time
 from string_operations import *
 from constants import *
 from webdriver_manager.chrome import ChromeDriverManager
 import csv
 
+CHROME_OPTION = Options()
+CHROME_OPTION.add_argument("--window-size=2000,0")
+CHROME_OPTION.add_argument("--start-maximized")
+# CHROME_OPTION.add_argument("--headless")
+
+
 def getGameDataOfDate(season, date):
-    data_driver = webdriver.Chrome(ChromeDriverManager().install())
+    
+    #data_driver = webdriver.Chrome(ChromeDriverManager().install(), chrome_options=CHROME_OPTION)
+    DRIVER = webdriver.Chrome(ChromeDriverManager().install(), chrome_options=CHROME_OPTION)
     team_data = {}
     columns = ['TEAM']
     sanity = 0
     
     for data_category in constants.DATA_CATEGORIES.keys(): #loop through different types of data
         url = getNBAPerGameurl(data_category, season, date)
-        data_driver.get(url)
+        DRIVER.get(url)
         
         time.sleep(1)
-        html = data_driver.page_source
+        html = DRIVER.page_source
         soup = BeautifulSoup(html, 'html.parser')
         if soup.title.text == "404 Not Found":
             print("Oops, seems like the URL formation went wrong")
@@ -49,21 +58,25 @@ def getGameDataOfDate(season, date):
         
         print("collected the "+data_category+" data of "+date)
 
-    data_driver.close()
+    #data_driver.close()
+    DRIVER.close()
     return team_data, columns
 
 def getTeamsLastNGameData(season, N):
-    data_driver = webdriver.Chrome(ChromeDriverManager().install())
+    
+    #data_driver = webdriver.Chrome(ChromeDriverManager().install(), chrome_options=CHROME_OPTION)
+    #data_driver = webdriver.Chrome(ChromeDriverManager().install())
+    DRIVER = webdriver.Chrome(ChromeDriverManager().install(), chrome_options=CHROME_OPTION)
     team_data = {}
     columns = ['TEAM']
     sanity = 0
     
     for data_category in constants.DATA_CATEGORIES.keys(): #loop through different types of data
         url = getNBALastNGamesurl(data_category, season, N)
-        data_driver.get(url)
+        DRIVER.get(url)
         
         time.sleep(1)
-        html = data_driver.page_source
+        html = DRIVER.page_source
         soup = BeautifulSoup(html, 'html.parser')
         if soup.title.text == "404 Not Found":
             print("Oops, seems like the URL formation went wrong")
@@ -93,23 +106,27 @@ def getTeamsLastNGameData(season, N):
         
         print("collected the "+data_category+" data of the last " + str(N) + " games")
 
-    data_driver.close()
+    #data_driver.close()
+    DRIVER.close()
     return team_data
 
 def getScheduleOfDate(season, date):
     url = getBRurl(season, date)
-    driver = webdriver.Chrome(ChromeDriverManager().install())
-    driver.get(url)
+    
+    DRIVER = webdriver.Chrome(ChromeDriverManager().install(), chrome_options=CHROME_OPTION)
+    #driver = webdriver.Chrome(ChromeDriverManager().install())
+    DRIVER.get(url)
         
     time.sleep(1)
-    html = driver.page_source
+    html = DRIVER.page_source
     soup = BeautifulSoup(html, 'html.parser')
     if soup.title.text == "404 Not Found":
         print("Oops, seems like the URL formation went wrong")
         return None
     
     results = matchupByDate(str(soup.get_text), date)
-    driver.close()
+    #driver.close()
+    DRIVER.close()
     return results
 
 

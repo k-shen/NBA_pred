@@ -4,6 +4,7 @@ from constants import *
 from datetime import datetime
 from datetime import timedelta
 
+THIS_SEASON = SEASONS_LIST[-1]
 def readLastUpdate():
     with open(LASTRECORD, 'r') as infile:
         last = infile.readline()
@@ -16,10 +17,10 @@ def addNewData():
     last = readLastUpdate()
     collect = 'y'
 
-    if last < SEASON_DURATION[SEASONS_LIST[-1]][0] and last >= SEASON_DURATION[SEASONS_LIST[-2]][1]:
-        last = SEASON_DURATION[SEASONS_LIST[-1]][0]
+    if last < SEASON_DURATION[THIS_SEASON][0] and last >= SEASON_DURATION[SEASONS_LIST[-2]][1]:
+        last = SEASON_DURATION[THIS_SEASON][0]
     
-    if now < SEASON_DURATION[SEASONS_LIST[-1]][0]:
+    if now < SEASON_DURATION[THIS_SEASON][0]:
         print("Season has yet to start, check back later")
         return
     if now < last:
@@ -36,13 +37,14 @@ def addNewData():
         return
 
     if collect == 'y':
-        appendData(SEASONS_LIST[-1], last+timedelta(days=1), now)
+        print("Updating the database... Ignore browser popups")
+        appendData(THIS_SEASON, last+timedelta(days=1), now)
 
 def predictUsingLastNGameData(N, away_team, home_team, data):
     if data == None:
         addNewData()
         print("Retriving new data, ignore browser pop-ups")
-        data = getTeamsLastNGameData(SEASONS_LIST[-1], N)
+        data = getTeamsLastNGameData(THIS_SEASON, N)
     
     regression, model = buildModel(0.7, [])
     print("Estimating the team's performance based on the previous 3 games...")
@@ -67,10 +69,11 @@ def predictionHelper(home_team, away_team, model, data):
     return result
 
 def predicting(data):
+    print("This is manual predicting mode")
     if data == None:
         addNewData()
-    print("Retriving new data, ignore browser pop-ups")
-    data = getTeamsLastNGameData(SEASONS_LIST[-1], 3)
+        print("Retriving new data, ignore browser pop-ups")
+        data = getTeamsLastNGameData(THIS_SEASON, 3)
     
     away_team = ''
     second = False
@@ -135,8 +138,73 @@ def predicting(data):
             
         second = True if again == 'Y' else False
 
+def auto_predict(data):
+    print("This is auto predicting mode")
+    print("Retriving today's matchups, ignore browser pop-ups")
+    now = datetime.today().date()
+    
+    matchups = getScheduleOfDate(THIS_SEASON, now.strftime("%m/%d/%Y"))
+    if matchups == None:
+        print("There are no games today... Entering manual predicting mode")
+        predicting(None)
+    if data == None:
+        addNewData()
+        print("Retriving new data, ignore browser pop-ups")
+    data = getTeamsLastNGameData(THIS_SEASON, 3)
+    for home_team, away_team in matchups.items():
+        print(away_team, home_team)
+        data = predictUsingLastNGameData(3, away_team, home_team, data)
+    
+    return data
+
+def home():
+    print("Welcome to Kaiwen's NBA prediction")
+    custom = input(
+            'Would you like to automatically predict today\'s game (y/n)?: '
+        ).strip().capitalize()
+    while custom != 'Y' and custom != 'N':
+        print('Please enter either y or n!!')
+        custom = input(
+            'Would you like to automatically predict today\'s game (y/n)?: ').strip().capitalize()
+    
+    data = None
+    if custom == 'Y':
+        data = auto_predict(None)
+    else:
+        data = predicting(None)
+
+    again = input("Would you like to stay in the prediction app (y/n)?: ").strip().capitalize()
+    while again != 'Y' and again != 'N':
+        print('Please enter either y or n!!')
+        again = input(
+            'Would you like to stay in the prediction app (y/n)?: ').strip().capitalize()
+    again = True if again == 'Y' else False
+    while again:
+        custom = input(
+            'Would you like to automatically predict today\'s game (y/n)?: '
+        ).strip().capitalize()
+        while custom != 'Y' and custom != 'N':
+            print('Please enter either y or n!!')
+            custom = input(
+                'Would you like to automatically predict today\'s game (y/n)?: ').strip().capitalize()
+        
+        if custom == 'Y':
+            data = auto_predict(data)
+        else:
+            data = predicting(data)
+        
+        again = input("Would you like to stay in the prediction app (y/n)?: ").strip().capitalize()
+        while again != 'Y' and again != 'N':
+            print('Please enter either y or n!!')
+            again = input(
+                'Would you like to stay in the prediction app (y/n)?: ').strip().capitalize()
+        
+        again = True if again == 'Y' else False
+
     print("Thank you for using the prediction model!!")
+    
 
 if __name__ == '__main__':
-    predicting(None)
+    home()
+    #predicting(None)
     #predictUsingLastNGameData(3, 'Houston Rockets', 'Atlanta Hawks')
