@@ -5,6 +5,7 @@ from datetime import datetime
 from datetime import timedelta
 
 THIS_SEASON = SEASONS_LIST[-1]
+GAME_ESTIMATE = 5
 def readLastUpdate():
     with open(LASTRECORD, 'r') as infile:
         last = infile.readline()
@@ -42,21 +43,23 @@ def addNewData():
 
 def predictUsingLastNGameData(N, away_team, home_team, data):
     if data == None:
-        addNewData()
         print("Retriving new data, ignore browser pop-ups")
+        addNewData()
         data = getTeamsLastNGameData(THIS_SEASON, N)
     
     regression, model = buildModel(0.7, [])
-    print("Estimating the team's performance based on the previous 3 games...")
+    print("Estimating the team's performance based on the previous " + str(GAME_ESTIMATE) + " games...")
     
     results = predictionHelper(home_team, away_team, regression, data)
     print("The Ridge regression model predicts that " + home_team + " " + str(round(results[0], 1)) + 
     ": " + away_team + " " + str(round(results[1], 1)))
+    print("The total is " + str(round(results[0] + results[1], 1)))
 
-    results = predictionHelper(home_team, away_team, model, data)
-    print("The Keras Sequential model predicts that " + home_team + " " + str(round(results[0], 1)) + 
-    ": " + away_team + " " + str(round(results[1], 1)))
+    # results = predictionHelper(home_team, away_team, model, data)
+    # print("The Keras Sequential model predicts that " + home_team + " " + str(round(results[0], 1)) + 
+    # ": " + away_team + " " + str(round(results[1], 1)))
 
+    print()
     return data
 
 def predictionHelper(home_team, away_team, model, data):
@@ -71,9 +74,9 @@ def predictionHelper(home_team, away_team, model, data):
 def predicting(data):
     print("This is manual predicting mode")
     if data == None:
-        addNewData()
         print("Retriving new data, ignore browser pop-ups")
-        data = getTeamsLastNGameData(THIS_SEASON, 3)
+        addNewData()
+        data = getTeamsLastNGameData(THIS_SEASON, GAME_ESTIMATE)
     
     away_team = ''
     second = False
@@ -95,7 +98,7 @@ def predicting(data):
         second = True
     home_team = SHORT_CUTS_DICT[home_team]
     
-    data = predictUsingLastNGameData(3, away_team, home_team, data)
+    data = predictUsingLastNGameData(GAME_ESTIMATE, away_team, home_team, data)
     again = input(
         'Would you like to predict another game (y/n)?: '
     ).strip().capitalize()
@@ -127,7 +130,7 @@ def predicting(data):
             second = True
         home_team = SHORT_CUTS_DICT[home_team]
         
-        data = predictUsingLastNGameData(3, away_team, home_team, data)
+        data = predictUsingLastNGameData(GAME_ESTIMATE, away_team, home_team, data)
         again = input(
             'Would you like to predict another game (y/n)?: '
         ).strip().capitalize()
@@ -148,17 +151,20 @@ def auto_predict(data):
         print("There are no games today... Entering manual predicting mode")
         predicting(None)
     if data == None:
-        addNewData()
         print("Retriving new data, ignore browser pop-ups")
-    data = getTeamsLastNGameData(THIS_SEASON, 3)
+        addNewData()
+    data = getTeamsLastNGameData(THIS_SEASON, GAME_ESTIMATE)
     for home_team, away_team in matchups.items():
-        print(away_team, home_team)
-        data = predictUsingLastNGameData(3, away_team, home_team, data)
+        print(away_team + ' @ ' + home_team)
+        data = predictUsingLastNGameData(GAME_ESTIMATE, away_team, home_team, data)
     
     return data
 
 def home():
     print("Welcome to Kaiwen's NBA prediction")
+    current = datetime.today().date()
+    
+    # Asking for auto prediction
     custom = input(
             'Would you like to automatically predict today\'s game (y/n)?: '
         ).strip().capitalize()
@@ -167,12 +173,14 @@ def home():
         custom = input(
             'Would you like to automatically predict today\'s game (y/n)?: ').strip().capitalize()
     
+    # Prediction
     data = None
     if custom == 'Y':
         data = auto_predict(None)
     else:
         data = predicting(None)
 
+    # Ask to stay in
     again = input("Would you like to stay in the prediction app (y/n)?: ").strip().capitalize()
     while again != 'Y' and again != 'N':
         print('Please enter either y or n!!')
@@ -180,6 +188,8 @@ def home():
             'Would you like to stay in the prediction app (y/n)?: ').strip().capitalize()
     again = True if again == 'Y' else False
     while again:
+        
+        # Asking for auto prediction
         custom = input(
             'Would you like to automatically predict today\'s game (y/n)?: '
         ).strip().capitalize()
@@ -188,11 +198,20 @@ def home():
             custom = input(
                 'Would you like to automatically predict today\'s game (y/n)?: ').strip().capitalize()
         
+        # If model is left unexited overnight 
+        new_date = datetime.today().date()
+        if new_date > current:
+            print("Retriving new data, ignore browser pop-ups")
+            addNewData()
+            data = getTeamsLastNGameData(THIS_SEASON, GAME_ESTIMATE)
+        current = new_date
+        
         if custom == 'Y':
             data = auto_predict(data)
         else:
             data = predicting(data)
         
+        # Ask to stay in
         again = input("Would you like to stay in the prediction app (y/n)?: ").strip().capitalize()
         while again != 'Y' and again != 'N':
             print('Please enter either y or n!!')

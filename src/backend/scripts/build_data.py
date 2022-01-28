@@ -80,9 +80,12 @@ def getTeamsLastNGameData(season, N):
         soup = BeautifulSoup(html, 'html.parser')
         if soup.title.text == "404 Not Found":
             print("Oops, seems like the URL formation went wrong")
-            return None, None
+            return None
 
         column_ = getCategoriesFromHTML(str(soup.find('thead')))
+        if len(column_) == 0:
+            print("error in getting data for the last " + str(N) + " games")
+            return None
         column_.pop(0)
         teams_ = getAllTeamStats(str(soup.find('tbody')), data_category)
         removing = constants.DATA_CATEGORIES[data_category]

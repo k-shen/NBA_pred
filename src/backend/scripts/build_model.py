@@ -13,20 +13,20 @@ def buildModel(train_percent, deselected):
 
     regression = Ridge()
     regression.fit(X_train, y_train)
-    print("evaluating Ridge regression... testing results stored in Ridge.txt")
+    print("Evaluating Ridge regression... testing results stored in Ridge.txt")
     evaluateModel(regression, X_test, y_test, "Ridge.txt")
 
     model = tf.keras.Sequential()
-    model.add(
-        Dense(len(X_train[0]), input_dim=len(X_train[0]),
-              kernel_initializer='normal', activation='relu'))
-    model.add(Dense(16, activation='relu'))
-    model.add(Dense(1, activation='linear'))
-    model.compile(optimizer='adam', loss='mse', metrics=['mse', 'mae'])
+    # model.add(
+    #     Dense(len(X_train[0]), input_dim=len(X_train[0]),
+    #           kernel_initializer='normal', activation='relu'))
+    # model.add(Dense(16, activation='relu'))
+    # model.add(Dense(1, activation='linear'))
+    # model.compile(optimizer='adam', loss='mse', metrics=['mse', 'mae'])
 
-    model.fit(X_train, y_train, verbose=0)
-    print("evaluating Keras Sequential... testing results stored in Keras_eval.txt")
-    evaluateModel(model, X_test, y_test, "Keras_eval.txt")
+    # model.fit(X_train, y_train, verbose=0)
+    # print("evaluating Keras Sequential... testing results stored in Keras_eval.txt")
+    # evaluateModel(model, X_test, y_test, "Keras_eval.txt")
     return regression, model
 
 
