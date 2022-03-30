@@ -6,6 +6,7 @@ from datetime import timedelta
 
 THIS_SEASON = SEASONS_LIST[-1]
 GAME_ESTIMATE = 4
+TTSPLIT_RATIO = 0.7
 def readLastUpdate():
     with open(LASTRECORD, 'r') as infile:
         last = infile.readline()
@@ -38,18 +39,18 @@ def addNewData():
         return
 
     if collect == 'y':
-        print("Updating the database... Ignore browser popups", end="")
+        print("Updating the database... Ignore browser popups")
         appendData(THIS_SEASON, last+timedelta(days=1), now)
 
-def predictUsingLastNGameData(N, away_team, home_team, data):
+def predictUsingLastNGameData(N, away_team, home_team, data, model_):
     if data == None:
         #print("Retriving new data, ignore browser pop-ups")
         addNewData()
         data = getTeamsLastNGameData(THIS_SEASON, N)
     
-    regression, model = buildModel(0.7, [])
+    
     print(away_team + " @ " + home_team)
-    results = predictionHelper(home_team, away_team, regression, data)
+    results = predictionHelper(home_team, away_team, model_, data)
     print("The Ridge regression model predicts that " + home_team + " " + str(round(results[0], 1)) + 
     ": " + away_team + " " + str(round(results[1], 1)))
     print("The total is " + str(round(results[0] + results[1], 1)))
@@ -96,8 +97,8 @@ def predicting(data):
         home_team = home_team.capitalize()
         second = True
     home_team = SHORT_CUTS_DICT[home_team]
-    
-    data = predictUsingLastNGameData(GAME_ESTIMATE, away_team, home_team, data)
+    regression, model = buildModel(TTSPLIT_RATIO, [])
+    data = predictUsingLastNGameData(GAME_ESTIMATE, away_team, home_team, data, regression)
     again = input(
         'Would you like to predict another game (y/n)?: '
     ).strip().capitalize()
@@ -129,7 +130,8 @@ def predicting(data):
             second = True
         home_team = SHORT_CUTS_DICT[home_team]
         
-        data = predictUsingLastNGameData(GAME_ESTIMATE, away_team, home_team, data)
+        regression, model = buildModel(TTSPLIT_RATIO, [])
+        data = predictUsingLastNGameData(GAME_ESTIMATE, away_team, home_team, data, regression)
         again = input(
             'Would you like to predict another game (y/n)?: '
         ).strip().capitalize()
@@ -155,9 +157,10 @@ def auto_predict(data):
     data = getTeamsLastNGameData(THIS_SEASON, GAME_ESTIMATE)
     
     print("")
+    regression, model = buildModel(TTSPLIT_RATIO, [])
     for home_team, away_team in matchups.items():
     
-        data = predictUsingLastNGameData(GAME_ESTIMATE, away_team, home_team, data)
+        data = predictUsingLastNGameData(GAME_ESTIMATE, away_team, home_team, data, regression)
     
     return data
 
@@ -226,5 +229,3 @@ def home():
 
 if __name__ == '__main__':
     home()
-    #predicting(None)
-    #predictUsingLastNGameData(3, 'Houston Rockets', 'Atlanta Hawks')
