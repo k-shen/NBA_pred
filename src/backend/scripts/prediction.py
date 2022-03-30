@@ -5,7 +5,7 @@ from datetime import datetime
 from datetime import timedelta
 
 THIS_SEASON = SEASONS_LIST[-1]
-GAME_ESTIMATE = 5
+GAME_ESTIMATE = 4
 def readLastUpdate():
     with open(LASTRECORD, 'r') as infile:
         last = infile.readline()
@@ -38,18 +38,17 @@ def addNewData():
         return
 
     if collect == 'y':
-        print("Updating the database... Ignore browser popups")
+        print("Updating the database... Ignore browser popups", end="")
         appendData(THIS_SEASON, last+timedelta(days=1), now)
 
 def predictUsingLastNGameData(N, away_team, home_team, data):
     if data == None:
-        print("Retriving new data, ignore browser pop-ups")
+        #print("Retriving new data, ignore browser pop-ups")
         addNewData()
         data = getTeamsLastNGameData(THIS_SEASON, N)
     
     regression, model = buildModel(0.7, [])
-    print("Estimating the team's performance based on the previous " + str(GAME_ESTIMATE) + " games...")
-    
+    print(away_team + " @ " + home_team)
     results = predictionHelper(home_team, away_team, regression, data)
     print("The Ridge regression model predicts that " + home_team + " " + str(round(results[0], 1)) + 
     ": " + away_team + " " + str(round(results[1], 1)))
@@ -143,19 +142,21 @@ def predicting(data):
 
 def auto_predict(data):
     print("This is auto predicting mode")
-    print("Retriving today's matchups, ignore browser pop-ups")
     now = datetime.today().date()
-    
     matchups = getScheduleOfDate(THIS_SEASON, now.strftime("%m/%d/%Y"))
-    if matchups == None:
+    
+    if matchups == None or len(matchups) == 0:
         print("There are no games today... Entering manual predicting mode")
         predicting(None)
+        
     if data == None:
-        print("Retriving new data, ignore browser pop-ups")
         addNewData()
+        
     data = getTeamsLastNGameData(THIS_SEASON, GAME_ESTIMATE)
+    
+    print("")
     for home_team, away_team in matchups.items():
-        print(away_team + ' @ ' + home_team)
+    
         data = predictUsingLastNGameData(GAME_ESTIMATE, away_team, home_team, data)
     
     return data

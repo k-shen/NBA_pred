@@ -4,7 +4,7 @@ import tensorflow as tf
 from tensorflow.keras.layers import Dense
 import random
 import os
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
 def buildModel(train_percent, deselected):
     orig_data, targets = getDataAndTargets(deselected)
@@ -13,7 +13,7 @@ def buildModel(train_percent, deselected):
 
     regression = Ridge()
     regression.fit(X_train, y_train)
-    print("Evaluating Ridge regression... testing results stored in Ridge.txt")
+    #print("Evaluating Ridge regression... testing results stored in Ridge.txt")
     evaluateModel(regression, X_test, y_test, "Ridge.txt")
 
     model = tf.keras.Sequential()

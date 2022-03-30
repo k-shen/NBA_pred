@@ -11,13 +11,12 @@ import csv
 CHROME_OPTION = Options()
 CHROME_OPTION.add_argument("--window-size=2000,0")
 CHROME_OPTION.add_argument("--start-maximized")
+CHROME_OPTION.add_argument("--log-level=3")
 # CHROME_OPTION.add_argument("--headless")
-
+DRIVER_MANAGER = ChromeDriverManager().install()
 
 def getGameDataOfDate(season, date):
-    
-    #data_driver = webdriver.Chrome(ChromeDriverManager().install(), chrome_options=CHROME_OPTION)
-    DRIVER = webdriver.Chrome(ChromeDriverManager().install(), chrome_options=CHROME_OPTION)
+    DRIVER = webdriver.Chrome(DRIVER_MANAGER, chrome_options=CHROME_OPTION)
     team_data = {}
     columns = ['TEAM']
     sanity = 0
@@ -56,17 +55,16 @@ def getGameDataOfDate(season, date):
             else:
                 team_data[k] = team_data[k] + teams_[k]
         
-        print("collected the "+data_category+" data of "+date)
+        print(" - collected the "+data_category+" data of "+date)
 
     #data_driver.close()
     DRIVER.close()
     return team_data, columns
 
 def getTeamsLastNGameData(season, N):
+    print("Retriving data from the last " + str(N) + " games:")
     
-    #data_driver = webdriver.Chrome(ChromeDriverManager().install(), chrome_options=CHROME_OPTION)
-    #data_driver = webdriver.Chrome(ChromeDriverManager().install())
-    DRIVER = webdriver.Chrome(ChromeDriverManager().install(), chrome_options=CHROME_OPTION)
+    DRIVER = webdriver.Chrome(DRIVER_MANAGER, chrome_options=CHROME_OPTION, service_log_path='/dev/null')
     team_data = {}
     columns = ['TEAM']
     sanity = 0
@@ -107,29 +105,35 @@ def getTeamsLastNGameData(season, N):
             else:
                 team_data[k] = team_data[k] + teams_[k]
         
-        print("collected the "+data_category+" data of the last " + str(N) + " games")
+        print(" - collected the "+data_category+" data of the last " + str(N) + " games")
 
     #data_driver.close()
     DRIVER.close()
     return team_data
 
 def getScheduleOfDate(season, date):
+    print("Retriving matchups, ignore browser pop-ups", end="", flush=True)
     url = getBRurl(season, date)
     
-    DRIVER = webdriver.Chrome(ChromeDriverManager().install(), chrome_options=CHROME_OPTION)
-    #driver = webdriver.Chrome(ChromeDriverManager().install())
+    DRIVER = webdriver.Chrome(DRIVER_MANAGER, chrome_options=CHROME_OPTION)
+    delimiterLoading()
     DRIVER.get(url)
-        
+    
+    delimiterLoading()
     time.sleep(1)
     html = DRIVER.page_source
     soup = BeautifulSoup(html, 'html.parser')
+    delimiterLoading()
+    
     if soup.title.text == "404 Not Found":
         print("Oops, seems like the URL formation went wrong")
         return None
     
     results = matchupByDate(str(soup.get_text), date)
-    #driver.close()
+
+    delimiterLoading()
     DRIVER.close()
+    print("done!")
     return results
 
 

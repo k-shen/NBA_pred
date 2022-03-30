@@ -104,3 +104,6 @@ def getAllTeamStats(html, category):
     team_data = splitTeam(text, category)
 
     return team_data
+
+def delimiterLoading():
+    print(".", end="")
